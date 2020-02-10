@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Platform for remote companies using SCRUM - Sprint Planning voting - Index</title>
+  <meta name="description" content="Scrum Sprint planning voting" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <meta property="og:site_name" content="Jirka Kulovany" />
+  <meta property="og:title" content="Jirka Kulovany" />
+
+  <meta property="og:description" content="Scrum Sprint planning votings" />
+
+  <link rel="canonical" href="https://jirka.kulovany.net/vote" />
+
+
+  <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-database.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyCoj3ifm5J6l6aEPj8bX_OAtK2aVHShAw4",
+      authDomain: "vote-d9b6c.firebaseapp.com",
+      databaseURL: "https://vote-d9b6c.firebaseio.com",
+      projectId: "vote-d9b6c",
+      storageBucket: "vote-d9b6c.appspot.com",
+      messagingSenderId: "192854931237",
+      appId: "1:192854931237:web:adccd4ae15fc1b28bfcccc"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    var db = firebase.database();
+  </script>
+
+
+  <script>
+    function getRandomInt(max) {
+      return Math.floor(Math.random() * Math.floor(max));
+    }
+
+    let currentUserId = getRandomInt(10000000000);
+    const currentRoomId = getQueryParameter('id');
+    let currentRoomState = null;
+
+    function getQueryParameter(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    function ensureIdQueryParam() {
+      if (!getQueryParameter('id')) {
+        document.location.href = document.location.href + '?id=' + getRandomInt(100000000);
+        // return (no-op)
+      }
+    }
+    ensureIdQueryParam(); // TODO: This can trigger infinite reload when multiple IDs are defined incorrectly.
+
+    function vote(value) {
+      if (currentRoomState && currentRoomState.showVotes === true) return;
+
+      const ref = db.ref('rooms/' + currentRoomId + '/votes/' + currentUserId);
+      ref.set('' + value);
+
+      return ref;
+    }
+
+    function reset() {
+      const emptyVotes = {};
+      Object.keys(currentRoomState.votes || {}).forEach(key => emptyVotes[key] = '-');
+      db.ref('rooms/' + currentRoomId + '/votes').set(emptyVotes);
+
+      const ref = db.ref('rooms/' + currentRoomId + '/showVotes');
+      ref.set(false);
+
+      return ref;
+    }
+
+    function show() {
+      const ref = db.ref('rooms/' + currentRoomId + '/showVotes');
+      ref.set(true);
+
+      return ref;
+    }
+
+    function joinRoom() {
+      const userVoteRef = vote('-');
+      userVoteRef.onDisconnect().remove();
+
+      setTimeout(() => {
+        document.getElementById('user-name').value = currentUserId;
+      }, 1000);
+
+      const roomRef = db.ref('rooms/' + currentRoomId);
+      roomRef.on('value', function (snapshot) {
+        // Update local state for other functions
+        currentRoomState = snapshot.val();
+        // console.log(JSON.stringify(currentRoomState, null, 2));
+
+        // Update results list
+        const newResults = document.createElement("div");
+        newResults.id = 'results';
+
+        let averageAcc = 0;
+        let averageVotes = 0;
+        Object.keys(currentRoomState.votes).forEach((userId, idx) => {
+          const vote = currentRoomState.votes[userId];
+          const newUserVote = document.createElement('p');
+
+          if (!currentRoomState.showVotes) {
+            newUserVote.innerText = userId + ': ' + (vote === '-' ? 'no vote yet' : 'voted!');
+          } else {
+            newUserVote.innerText = userId + ': ' + vote;
+            if (vote !== '-' && vote !== '??') {
+              averageAcc += parseInt(vote);
+              averageVotes += 1;
+            }
+          }
+          newResults.appendChild(newUserVote);
+        })
+
+        if (averageVotes > 0) {
+          const stats = document.createElement('p');
+          stats.innerHTML = 'Average: ' + averageAcc / averageVotes;
+          newResults.appendChild(stats)
+
+        }
+
+        const results = document.getElementById("results");
+        results.parentNode.replaceChild(newResults, results);
+
+        // Show results if everybody voted
+        if (Object.values(currentRoomState.votes).every(value => value !== '-')) show();
+      })
+    }
+    joinRoom();
+
+    function changeUserName() {
+      const newName = document.getElementById('user-name').value;
+      if (Object.keys(currentRoomState.votes).includes(newName)) return;
+
+      db.ref('rooms/' + currentRoomId + '/votes/' + currentUserId).onDisconnect().cancel();
+      db.ref('rooms/' + currentRoomId + '/votes/' + newName).onDisconnect().remove();
+
+      var update = {};
+      update[currentUserId] = null;
+      update[newName] = currentRoomState.votes[currentUserId];
+      db.ref('rooms/' + currentRoomId + '/votes/').update(update);
+
+      currentUserId = newName;
+    }
+  </script>
+</head>
+
+<body>
+  <input id="user-name"></input>
+  <button onclick="changeUserName()">Set name</button>
+
+  <br />
+  <br />
+
+  <button onclick="vote(1)">1</button>
+  <button onclick="vote(2)">2</button>
+  <button onclick="vote(3)">3</button>
+  <button onclick="vote(5)">5</button>
+  <button onclick="vote(8)">8</button>
+  <button onclick="vote(13)">13</button>
+  <button onclick="vote(20)">20</button>
+  <button onclick="vote('??')">??</button>
+
+  <br />
+  <br />
+
+  <button onclick="reset()">Reset</button>
+  <button onclick="show()">Show votes</button>
+
+  <div id='results'> </div>
+</body>
+
+</html>

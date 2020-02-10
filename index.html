@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!-- (1) Optimize for mobile versions: http://goo.gl/EOpFl -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Platform for remote companies using SCRUM - Sprint Planning voting - Index</title>
+  <meta name="description" content="Scrum Sprint planning voting" />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <meta property="og:site_name" content="Jirka Kulovany" />
+  <meta property="og:title" content="Jirka Kulovany" />
+
+  <meta property="og:description" content="Scrum Sprint planning votings" />
+
+  <!-- <meta property="og:image" content="https://jirka.kulovany.net/assets/images/jk_logo.jpg" /> -->
+  <!-- <meta property="og:url" content="https://jirka.kulovany.net/vote"> -->
+  <!-- <meta property="og:type" content="blog" /> -->
+
+  <link rel="canonical" href="https://jirka.kulovany.net/vote" />
+  <!-- <link rel="shortcut icon" href="/assets/images/favicon.png" type="image/png" /> -->
+  <!-- <link rel="stylesheet" href="//brick.a.ssl.fastly.net/Linux+Libertine:400,400i,700,700i/Open+Sans:400,400i,700,700i"> -->
+  <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"> -->
+
+
+  <!-- <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" /> -->
+  <!-- <link rel="stylesheet" type="text/css" media="print" href="/css/print.css" /> -->
+
+  <script>
+    function getRandomInt(max) {
+      return Math.floor(Math.random() * Math.floor(max));
+    }
+
+    function joinRoom(roomId) {
+      if (document.location.href.includes('index.html')) {
+        document.location.href = document.location.href.replace('index.html', 'room.html') + '?id=' + roomId;
+      } else {
+        document.location.href = document.location.href + '/room.html?id=' + roomId;
+      }
+    }
+
+    function createNewRoomClick() {
+      joinRoom(getRandomInt(1000000000000));
+    }
+
+    function joinRoomClick() {
+      joinRoom(document.getElementById('room-id').value);
+    }
+  </script>
+</head>
+
+<body>
+  <button onclick="createNewRoomClick()">Create new room</button>
+  <br />
+  <input id="room-id"></input>
+  <button onclick="joinRoomClick()">Join room</button>
+</body>
+
+</html>

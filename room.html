@@ -85,6 +85,12 @@
       const ref = db.ref('rooms/' + currentRoomId + '/showVotes');
       ref.set(false);
 
+      document.getElementById('show').disabled = false;
+      const voteElements = document.getElementsByClassName('vote')
+      for (var i = 0; i < voteElements.length; i++) {
+        voteElements[i].disabled = false;
+      }
+
       return ref;
     }
 
@@ -108,6 +114,14 @@
         // Update local state for other functions
         currentRoomState = snapshot.val();
         // console.log(JSON.stringify(currentRoomState, null, 2));
+
+        const shouldHaveButtonsDisabled = currentRoomState.showVotes === true;
+        document.getElementById('show').disabled = shouldHaveButtonsDisabled;
+
+        const voteElements = document.getElementsByClassName('vote')
+        for (var i = 0; i < voteElements.length; i++) {
+          voteElements[i].disabled = shouldHaveButtonsDisabled;
+        }
 
         // Update results list
         const newResults = document.createElement("div");
@@ -171,20 +185,20 @@
   <br />
   <br />
 
-  <button onclick="vote(1)">1</button>
-  <button onclick="vote(2)">2</button>
-  <button onclick="vote(3)">3</button>
-  <button onclick="vote(5)">5</button>
-  <button onclick="vote(8)">8</button>
-  <button onclick="vote(13)">13</button>
-  <button onclick="vote(20)">20</button>
-  <button onclick="vote('??')">??</button>
+  <button class="vote" onclick="vote(1)">1</button>
+  <button class="vote" onclick="vote(2)">2</button>
+  <button class="vote" onclick="vote(3)">3</button>
+  <button class="vote" onclick="vote(5)">5</button>
+  <button class="vote" onclick="vote(8)">8</button>
+  <button class="vote" onclick="vote(13)">13</button>
+  <button class="vote" onclick="vote(20)">20</button>
+  <button class="vote" onclick="vote('??')">??</button>
 
   <br />
   <br />
 
-  <button onclick="reset()">Reset</button>
-  <button onclick="show()">Show votes</button>
+  <button id='reset' onclick="reset()">Reset</button>
+  <button id='show' onclick="show()">Show votes</button>
 
   <div id='results'> </div>
 </body>

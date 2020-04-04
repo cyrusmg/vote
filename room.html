@@ -52,7 +52,7 @@
       return Math.floor(Math.random() * Math.floor(max));
     }
 
-    let currentUserId = getRandomInt(10000000000);
+    let currentUserId = localStorage.getItem('username') || getRandomInt(10000000000);
     const currentRoomId = getQueryParameter('id');
     let currentRoomState = null;
 
@@ -177,6 +177,7 @@
       db.ref('rooms/' + currentRoomId + '/votes/').update(update);
 
       currentUserId = newName;
+      localStorage.setItem('username', currentUserId);
     }
   </script>
 </head>

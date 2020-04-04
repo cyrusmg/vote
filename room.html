@@ -8,7 +8,7 @@
   <!-- (1) force latest IE rendering engine: bit.ly/1c8EiC9 -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>Platform for remote companies using SCRUM - Sprint Planning voting - Index</title>
+  <title>SCRUM Sprint Planning Voting Tool</title>
   <meta name="description" content="Scrum Sprint planning voting" />
 
   <meta name="HandheldFriendly" content="True" />
@@ -23,6 +23,7 @@
 
   <link rel="canonical" href="https://jirka.kulovany.net/vote" />
 
+  <link rel="stylesheet" href="/mvp.css">
 
   <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-database.js"></script>
@@ -147,8 +148,10 @@
 
         if (averageVotes > 0) {
           const stats = document.createElement('p');
-          stats.innerHTML = 'Average: ' + averageAcc / averageVotes;
-          newResults.appendChild(stats)
+          const b = document.createElement('b');
+          b.innerHTML = 'Average: ' + averageAcc / averageVotes;
+          stats.appendChild(b);
+          newResults.appendChild(stats);
 
         }
 
@@ -179,28 +182,39 @@
 </head>
 
 <body>
-  <input id="user-name"></input>
-  <button onclick="changeUserName()">Set name</button>
+  <main>
 
-  <br />
-  <br />
+    <article>
+      <div class="form">
+        <label>Username:
+          <input id="user-name" oninput="changeUserName()"></input>
+        </label>
 
-  <button class="vote" onclick="vote(1)">1</button>
-  <button class="vote" onclick="vote(2)">2</button>
-  <button class="vote" onclick="vote(3)">3</button>
-  <button class="vote" onclick="vote(5)">5</button>
-  <button class="vote" onclick="vote(8)">8</button>
-  <button class="vote" onclick="vote(13)">13</button>
-  <button class="vote" onclick="vote(20)">20</button>
-  <button class="vote" onclick="vote('??')">??</button>
+        Your vote:
+        <div>
+          <button type="button" class="vote" onclick="vote(1)">1</button>
+          <button type="button" class="vote" onclick="vote(2)">2</button>
+          <button type="button" class="vote" onclick="vote(3)">3</button>
+          <button type="button" class="vote" onclick="vote(5)">5</button>
+          <button type="button" class="vote" onclick="vote(8)">8</button>
+          <button type="button" class="vote" onclick="vote(13)">13</button>
+          <button type="button" class="vote" onclick="vote(20)">20</button>
+          <button type="button" class="vote" onclick="vote('??')">??</button>
+        </div>
 
-  <br />
-  <br />
+        <div>
+          <button type="button" id='reset' onclick="reset()">Reset</button>
+          <button type="button" id='show' onclick="show()">Show votes</button>
+        </div>
+      </div class="form">
+    </article>
 
-  <button id='reset' onclick="reset()">Reset</button>
-  <button id='show' onclick="show()">Show votes</button>
+    <article>
+      <div id='results'> </div>
 
-  <div id='results'> </div>
+    </article>
+
+  </main>
 </body>
 
 </html>

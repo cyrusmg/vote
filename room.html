@@ -75,6 +75,14 @@
       const ref = db.ref('rooms/' + currentRoomId + '/votes/' + currentUserId);
       ref.set('' + value);
 
+
+      const selectedButtonIndex = [1, 2, 3, 5, 8, 13, 20, '??'].findIndex(v => v === value);
+
+      const voteElements = document.getElementsByClassName('vote')
+      for (var i = 0; i < voteElements.length; i++) {
+        voteElements[i].disabled = i === selectedButtonIndex;
+      }
+
       return ref;
     }
 
@@ -147,9 +155,17 @@
         })
 
         if (averageVotes > 0) {
+          const avg = averageAcc / averageVotes;
+
+          const { value } = [1, 2, 3, 5, 8, 13, 20].reduce((acc, current) => {
+            const diff = Math.abs(avg - current);
+            if (diff <= acc.diff) { return { diff, value: current } }
+            else return acc;
+          }, { diff: 100000, value: -1 })
+
           const stats = document.createElement('p');
           const b = document.createElement('b');
-          b.innerHTML = 'Average: ' + averageAcc / averageVotes;
+          b.innerText = 'Average: ' + avg + ' (result: ' + value + ')';
           stats.appendChild(b);
           newResults.appendChild(stats);
 

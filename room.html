@@ -78,9 +78,12 @@
 
       const selectedButtonIndex = [1, 2, 3, 5, 8, 13, 20, '??'].findIndex(v => v === value);
 
-      const voteElements = document.getElementsByClassName('vote')
-      for (var i = 0; i < voteElements.length; i++) {
-        voteElements[i].disabled = i === selectedButtonIndex;
+
+      if (document.getElementById('show') && !document.getElementById('show').disabled) {
+        const voteElements = document.getElementsByClassName('vote')
+        for (var i = 0; i < voteElements.length; i++) {
+          voteElements[i].disabled = i === selectedButtonIndex;
+        }
       }
 
       return ref;

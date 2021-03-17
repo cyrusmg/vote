@@ -17,13 +17,16 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <meta property="og:site_name" content="Jirka Kulovany" />
-  <meta property="og:title" content="Jirka Kulovany" />
-
+  <meta property="og:title" content="Voting Tool" />
+  
   <meta property="og:description" content="Scrum Sprint planning votings" />
+  <meta property="og:image" content="https://res.cloudinary.com/djeivq7td/image/upload/v1614233067/og-voting_fhrbb1.png" />
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 
   <link rel="canonical" href="https://jirka.kulovany.net/vote" />
 
-  <link rel="stylesheet" href="./mvp.css">
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 
   <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-database.js"></script>
@@ -89,6 +92,19 @@
       return ref;
     }
 
+    function getResultRow (name, value) {
+      return `<tr class="${value === 'no vote yet' ? 'bg-gray-800' : ''}">
+            <td class="px-6 pl-12 py-2 whitespace-nowrap">
+              <div class="">${name}</div>
+            </td>
+            <td class="px-6 pr-12 py-2 whitespace-nowrap text-right">
+              <span class="px-2 inline-flex leading-5">
+                ${value}
+              </span>
+            </td>
+          </tr>`;
+    };
+
     function reset() {
       const emptyVotes = {};
       Object.keys(currentRoomState.votes || {}).forEach(key => emptyVotes[key] = '-');
@@ -134,27 +150,25 @@
         for (var i = 0; i < voteElements.length; i++) {
           voteElements[i].disabled = shouldHaveButtonsDisabled;
         }
-
-        // Update results list
-        const newResults = document.createElement("div");
-        newResults.id = 'results';
+        
+        let resultsTableInnerHtml = '';
 
         let averageAcc = 0;
         let averageVotes = 0;
         Object.keys(currentRoomState.votes).forEach((userId, idx) => {
           const vote = currentRoomState.votes[userId];
-          const newUserVote = document.createElement('p');
 
+          let value;
           if (!currentRoomState.showVotes) {
-            newUserVote.innerText = userId + ': ' + (vote === '-' ? 'no vote yet' : 'voted!');
+            value = vote === '-' ? 'no vote yet' : 'voted!';
           } else {
-            newUserVote.innerText = userId + ': ' + vote;
+            value = vote;
             if (vote !== '-' && vote !== '??') {
               averageAcc += parseInt(vote);
               averageVotes += 1;
             }
           }
-          newResults.appendChild(newUserVote);
+          resultsTableInnerHtml += getResultRow(userId, value);
         })
 
         if (averageVotes > 0) {
@@ -166,16 +180,11 @@
             else return acc;
           }, { diff: 100000, value: -1 })
 
-          const stats = document.createElement('p');
-          const b = document.createElement('b');
-          b.innerText = 'Average: ' + avg + ' (result: ' + value + ')';
-          stats.appendChild(b);
-          newResults.appendChild(stats);
-
+          resultsTableInnerHtml += getResultRow('', `<div>Average: ${avg}<br/><span class="font-bold text-lg">Result: ${value}</span>`);
         }
 
-        const results = document.getElementById("results");
-        results.parentNode.replaceChild(newResults, results);
+        const resultsTableEl = document.querySelector("#results-table");
+        resultsTableEl.innerHTML = resultsTableInnerHtml;
 
         // Show results if everybody voted
         if (Object.values(currentRoomState.votes).every(value => value !== '-')) show();
@@ -201,37 +210,43 @@
   </script>
 </head>
 
-<body>
+<body class="bg-gray-800 text-gray-50">
   <main>
 
-    <article>
+    <article class="block mx-auto max-w-3xl mt-16 px-12 py-8 rounded-lg shadow-lg bg-gray-900 border border-gray-700">
       <div class="form">
-        <label>Username:
-          <input id="user-name" oninput="changeUserName()"></input>
+        <label>
+          <span class="uppercase font-bold text-gray-400 block text-sm mb-2">Username</span>
+          <input id="user-name" oninput="changeUserName()" class="bg-gray-700 px-3 py-1 rounded-md"/>
         </label>
 
-        Your vote:
-        <div>
-          <button type="button" class="vote" onclick="vote(1)">1</button>
-          <button type="button" class="vote" onclick="vote(2)">2</button>
-          <button type="button" class="vote" onclick="vote(3)">3</button>
-          <button type="button" class="vote" onclick="vote(5)">5</button>
-          <button type="button" class="vote" onclick="vote(8)">8</button>
-          <button type="button" class="vote" onclick="vote(13)">13</button>
-          <button type="button" class="vote" onclick="vote(20)">20</button>
-          <button type="button" class="vote" onclick="vote('??')">??</button>
+        <div class="uppercase font-bold text-gray-400 text-sm mt-12 mb-2">
+          Your vote
+        </div>
+        <div class="flex flex-wrap mb-4 gap-4 space-between">
+          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(1)">1</button>
+          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(2)">2</button>
+          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(3)">3</button>
+          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(5)">5</button>
+          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(8)">8</button>
+          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(13)">13</button>
+          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(20)">20</button>
+          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote('??')">??</button>
         </div>
 
-        <div>
-          <button type="button" id='reset' onclick="reset()">Reset</button>
-          <button type="button" id='show' onclick="show()">Show votes</button>
+        <div class="flex gap-4 mt-12">
+          <button class="text-lg text-gray-200 bg-gray-600 hover:bg-gray-500 focus:bg-gray-500 px-3 py-1 rounded-md" type="button" id='reset' onclick="reset()">🔄 Reset</button>
+          <button class="text-lg text-blue-100 bg-blue-700 hover:bg-blue-600 focus:bg-blue-600 px-3 py-1 rounded-md" type="button" id='show' onclick="show()">👀 Show votes</button>
         </div>
-      </div class="form">
+      </div>
     </article>
 
-    <article>
+    <article class="mt-8 mb-16">
       <div id='results'> </div>
-
+      <table class="mx-auto max-w-3xl w-full">
+        <tbody id="results-table" class="divide-y divide-gray-600">
+        </tbody>
+      </table>
     </article>
 
   </main>

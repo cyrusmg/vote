@@ -38,6 +38,42 @@
       background-color: rgb(75, 85, 99) !important;
     }
 
+    .card {
+      height: 198px;
+      width: 134px;
+    }
+
+    #point1 {
+      background: url('./assets/1.svg') no-repeat;
+    }
+
+    #point2 {
+      background: url('./assets/2.svg') no-repeat;
+    }
+
+    #point3 {
+      background: url('./assets/3.svg') no-repeat;
+    }
+
+    #point5 {
+      background: url('./assets/5.svg') no-repeat;
+    }
+
+    #point8 {
+      background: url('./assets/8.svg') no-repeat;
+    }
+
+    #point13 {
+      background: url('./assets/13.svg') no-repeat;
+    }
+
+    #point20 {
+      background: url('./assets/20.svg') no-repeat;
+    }
+
+    #pointq {
+      background: url('./assets/q.svg') no-repeat;
+    }
   </style>
 
   <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
@@ -236,14 +272,14 @@
           Your vote
         </div>
         <div class="flex flex-wrap mb-4 gap-4 space-between">
-          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(1)">1</button>
-          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(2)">2</button>
-          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(3)">3</button>
-          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(5)">5</button>
-          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(8)">8</button>
-          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(13)">13</button>
-          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(20)">20</button>
-          <button type="button" class="vote flex-1 text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote('??')">??</button>
+          <button title="1 - Low hanging fruit" id="point1" type="button" class="card vote text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(1)"></button>
+          <button title="2 - Piece of cake" id="point2" type="button" class="card vote text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(2)"></button>
+          <button title="3 - It Ain&apos;t Rocket Science" id="point3" type="button" class="card vote text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(3)"></button>
+          <button title="5 - Ornitorinco (Platypus)" id="point5" type="button" class="card vote text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(5)"></button>
+          <button title="8 - An arm and a leg" id="point8" type="button" class="card vote text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(8)"></button>
+          <button title="13 - Just squeaking by" id="point13" type="button" class="card vote text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(13)"></button>
+          <button title="20 - Don&apos;t put all your eggs in one basket" id="point20" type="button" class="card vote text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote(20)"></button>
+          <button title="?? - Here be dragons" id="pointq" type="button" class="card vote text-3xl py-2 px-4 border-2 border-gray-500 bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-md font-mono" onclick="vote('??')"></button>
         </div>
 
         <div class="flex gap-4 mt-12">
